@@ -3,6 +3,9 @@
 #
 # MIT License
 
+from flask import (
+   render_template
+)
 import os
 import serial
 import json
@@ -27,7 +30,7 @@ class DisplayCore():
 
     def webUpdate(self):
 	html = ''
-	render_template('templates/index.html')
+	html = render_template('index.html', temp=ardVar['temp'], testVar=ardVar['test'])
 	#with open(CURRENTDIR + '/template.html') as template:
 		#html = template.read()
         	#html = html.replace("%TEMP%", ardVar['temp'])

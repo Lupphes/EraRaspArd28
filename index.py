@@ -4,7 +4,7 @@
 # MIT License
 
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Flask, make_response, Blueprint, flash, g, redirect, render_template, request, url_for
 )
 application = Flask(__name__)
 
