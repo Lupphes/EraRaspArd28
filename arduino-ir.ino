@@ -1,5 +1,6 @@
+#include <pRNG.h>
+pRNG prng;
 int serIn; //var that will hold the bytes in read from the serialBuffer
-
 
 void setup() {
   Serial.begin(9600);
@@ -7,8 +8,6 @@ void setup() {
 
 void loop() {
   // Format for python
-  Serial.println(String(random(0, 255)) + ":" + String(random(0, 255)));
-
-
+  Serial.println(String(prng.getRndByte()) + ":" + String(prng.getRndByte()));
   delay(1000);
 }
