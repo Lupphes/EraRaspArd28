@@ -27,10 +27,11 @@ class DisplayCore():
 
     def webUpdate(self):
 	html = ''
-	with open(CURRENTDIR + '/template.html') as template:
-		html = template.read()
-        	html = html.replace("%TEMP%", ardVar['temp'])
-        	html = html.replace("%TESTVAR%", ardVar['test'])
+	render_template('templates/index.html')
+	#with open(CURRENTDIR + '/template.html') as template:
+		#html = template.read()
+        	#html = html.replace("%TEMP%", ardVar['temp'])
+        	#html = html.replace("%TESTVAR%", ardVar['test'])
         return html
 
     def retJSON(self):
