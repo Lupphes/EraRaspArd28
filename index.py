@@ -29,10 +29,7 @@ def backgroundLoop():
     core = DisplayCore()
     while True:
         core.getData()
-       	# Output the HTML
-        response = make_response(htmlOut)
-        response.headers['Content-Type'] = 'text/html'
-        return response
+
 
 @application.errorhandler(500)
 def internalServerError(error):
@@ -48,9 +45,8 @@ def index():
 	# The simple display core
         core = DisplayCore()
 	core.getData()
-        htmlOut = core.webUpdate()
         # Output the HTML
-        response = make_response(htmlOut)
+        response = make_response(core.webUpdate())
         return response
     except:
         # Error

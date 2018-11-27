@@ -3,13 +3,12 @@
 #
 # MIT License
 
-from flask import (
-   render_template
-)
+from flask import render_template
 import os
 import serial
 import json
 from portUtils import PortUtils;
+
 CURRENTDIR = os.path.dirname(__file__)
 BASEDIR = os.path.dirname(CURRENTDIR)
 
@@ -26,16 +25,9 @@ class DisplayCore():
         testVar = split[1] # Test
 
 	ardVar.update({'temp':temp,'test':testVar})
-	#ardVar.update({'temp': str(data)})
 
     def webUpdate(self):
-	html = ''
-	html = render_template('index.html', temp=ardVar['temp'], testVar=ardVar['test'])
-	#with open(CURRENTDIR + '/template.html') as template:
-		#html = template.read()
-        	#html = html.replace("%TEMP%", ardVar['temp'])
-        	#html = html.replace("%TESTVAR%", ardVar['test'])
-        return html
+	return render_template('index.html', temp=ardVar['temp'], testVar=ardVar['test'])
 
     def retJSON(self):
         ardVarJSON = json.dumps(ardVar)
