@@ -3,7 +3,9 @@
 # Features - showing data collected from arduino
 # MIT License
 
-from flask import Flask, request, make_response
+from flask import (
+    Blueprint, flash, g, redirect, render_template, request, url_for
+)
 application = Flask(__name__)
 
 #import thread
@@ -41,16 +43,14 @@ def internalServerError(error):
 
 # Renders a simple html page with the data
 @application.route('/', methods=['GET'])
-def start():
+def index():
     try:
 	# The simple display core
         core = DisplayCore()
 	core.getData()
         htmlOut = core.webUpdate()
-
         # Output the HTML
         response = make_response(htmlOut)
-        response.headers['Content-Type'] = 'text/html'
         return response
     except:
         # Error
