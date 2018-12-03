@@ -59,6 +59,7 @@ class Arduino():
         self.conn.write(command)
         line_received = self.conn.readline().decode().strip()
         header, value = line_received.split(':') # e.g. A4:1
+	print(line_received + ' - Full number from arduino')
         if header == ('A'+ str(pin_number)):
             # If header matches
             return int(value)

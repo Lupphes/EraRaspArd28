@@ -3,17 +3,28 @@
 # Features - showing data collected from arduino
 # MIT License
 
+from flask_socketio import SocketIO, emit
+from threading import Thread, Event
+
 from flask import (
     Flask, make_response, redirect, render_template, request, url_for
 )
 from pyduino import *
 import time
+from time import sleep
 
 application = Flask(__name__)
+
+application.config['SECRET_KEY'] = 'secret!'
+application.config['DEBUG'] = True
+socketio = SocketIO(application)
 
 import traceback
 import os
 import sys
+
+thread = Thread()
+thread_stop_event = Event()
 
 CURRENTDIR = os.path.dirname(os.path.abspath(__file__))
 if CURRENTDIR not in sys.path:
@@ -30,6 +41,7 @@ ANALOG_PIN = 0
 a.set_pin_mode(LED_PIN,'O')
 print 'Arduino initialized'
 
+
 def displayErrorHTML(error):
     # Formats an error in HTML for debugging on web page
     err = "<p>PYTHON ERROR</p>"
@@ -43,6 +55,22 @@ def internalServerError(error):
     err += "<pre>"+ str(traceback.format_exc()) + "</pre>"
     return err
 
+class ReadAnalogValues(Thread):
+    def __init__(self):
+        self.delay = 1
+        super(ReadAnalogValues, self).__init__()
+
+    def getAnalogValue(self):
+        # Reads values from arduino
+        print("Reading values")
+        while not thread_stop_event.isSet():
+	    number = a.analog_read(ANALOG_PIN)
+            socketio.emit('newnumber', {'number': number}, namespace='/test')
+            sleep(self.delay)
+
+    def run(self):
+	self.getAnalogValue()
+
 # Renders main page
 @application.route('/', methods = ['POST','GET'])
 def index():
@@ -55,24 +83,30 @@ def index():
         elif request.form['submit'] == 'Turn Off':
             print 'TURN ON'
             a.digital_write(LED_PIN,0)
-
         else:
             pass
 
     # Read ANALOG value from PIN
-    analogData = a.analog_read(ANALOG_PIN)
+    analogData = 0 #a.analog_read(ANALOG_PIN)
 
     # Renders the final template with given variables
-    return render_template('index.html', temp=100*(analogData/1023.))
+    return render_template('index.html', temp=analogData)
 
-# Provides the data in JSON format to do some better things with
-"""
-@application.route('/api/', methods=['GET'])
-def json():
-    response = make_response()
-    response.headers['Content-Type'] = 'application/json'
-    return response
-"""
+@socketio.on('connect', namespace='/test')
+def test_connect():
+    # need visibility of the global thread object
+    global thread
+    print('Client connected')
+
+    # Start the read from arduino only if the thread has not been started before.
+    if not thread.isAlive():
+        print("Starting Thread")
+        thread = ReadAnalogValues()
+	thread.start()
+
+@socketio.on('disconnect', namespace='/test')
+def test_disconnect():
+    print('Client disconnected')
 
 # API
 @application.route('/turnon', methods=['GET'] )
@@ -90,6 +124,7 @@ def turn_off():
 
 # Run the app
 if __name__ == "__main__":
-   # thread.start_new_thread(backgroundLoop());
+    socketio.run(application)
     application.debug = True
     application.run('0.0.0.0')
+

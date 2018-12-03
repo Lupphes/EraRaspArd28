@@ -6,7 +6,7 @@
 
 {% block content %}
         <strong>Temperature:</strong> {{ temp }}<br>
-        <strong>Test:</strong> {{ testVar }}<br>
+        <strong>Test:</strong> <span id="test">{{ testVar }}</span><br>
 
         <h2>Preparation for inputs</h2>
         <label class="switch">Svetlo
@@ -14,8 +14,8 @@
         </label>
 
     <form  action="/" method="post">
-  <p><input type="submit" name="submit" value="Turn On"> </p>
-  <p><input type="submit" name="submit" value="Turn Off"> </p>
+  	<p><input type="submit" name="submit" value="Turn On"> </p>
+  	<p><input type="submit" name="submit" value="Turn Off"> </p>
     </form>
 
 
