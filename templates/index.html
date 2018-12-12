@@ -13,10 +13,19 @@
           <input type="checkbox">
         </label>
 
-    <form  action="/" method="post">
-  	<p><input type="submit" name="submit" value="Turn On"> </p>
-  	<p><input type="submit" name="submit" value="Turn Off"> </p>
+    <form role="form" method="post" action="/" >
+  	<p>
+	<button type="submit" name="turnon" class="btn btn-default">Turn On</button>
+	<button type="submit" name="turnoff" class="btn btn-default">Turn Off</button>
+	</p>    
     </form>
+
+      <form role="form" method="post" action="/">
+        <div class="form-group">
+          <input type="text" name="temperature_val" class="form-control" id="url-box" placeholder="Enter temperature..." style="max-width: 300px; display: inline" required>
+        </div>
+        <button type="submit" name="setTemp" value="temp" class="btn btn-default">Submit</button>
+      </form>
 
 
 {% endblock %}
