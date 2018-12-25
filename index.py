@@ -3,20 +3,25 @@
 # Features - showing data collected from arduino
 # MIT License
 
+# Import core funtions
 import traceback
 import os
 import sys
 
 from threading import Thread, Event
 
-from flask import (
-    Flask, make_response, redirect, render_template, request, url_for
-)
+from flask import Flask, make_response, redirect, render_template, request, url_for
 from flask_socketio import SocketIO, emit
 
-from pyduino import *
+# Import supporting functions
+import json
 from time import sleep
 
+# Import custom functions
+from pyduino import *
+from databaseJSON import updateDatabase, getDatabaseData, getDatabaseJSON
+
+# Setting up the application
 application = Flask(__name__)
 
 application.config['SECRET_KEY'] = os.urandom(28)
@@ -37,34 +42,50 @@ sleep(3)
 # Pins declaration
 LED_PIN = 13
 ANALOG_PIN = 0
+WRITE_PIN = 2
 
+# Setting up the pins
 a.set_pin_mode(LED_PIN,'O')
-print 'Arduino initialized'
+a.set_pin_mode(ANALOG_PIN,'I')
+a.set_pin_mode(WRITE_PIN,'O')
+print 'Arduino and pins initialised'
 
-def displayErrorHTML(error):
-    # Formats an error in HTML for debugging on web page
-    err = "<p>PYTHON ERROR</p>"
-    err += "<pre>" + error + "</pre>"
-    return err
+# Database initialisation
+database = getDatabaseData()
+print('Databaze initialised with data:')
+print(str(database))
 
-@application.errorhandler(500)
-def internalServerError(error):
-    err = "<p>ERROR! 500</p>"
-    err += "<pre>"+ str(error) + "</pre>"
-    err += "<pre>"+ str(traceback.format_exc()) + "</pre>"
-    return err
+sleep(1) # Waits for data load
+
+# Setting up values from database
+if 'led' in database['actValues']['digital']:
+    a.digital_write(LED_PIN,database['actValues']['digital']['led'])
+if 'userTemp' in database['actValues']['analog']:
+    a.analog_write(WRITE_PIN,database['actValues']['analog']['userTemp'])
 
 class ReadAnalogValues(Thread):
+    """
+    Class which has init funtion, which reads data from arduino and push them into dictionary
+    It keeps executing, because of socket which communicate with .js file in webpage.
+    """
     def __init__(self):
-        self.delay = 1
+        self.delay = 1 # Needs delay :c
         super(ReadAnalogValues, self).__init__()
 
     def getAnalogValue(self):
         # Reads values from arduino
         print("Reading values")
         while not thread_stop_event.isSet():
+
+    	    # List of analog pins which their information needs to be stored
 	    currTemp = a.analog_read(ANALOG_PIN)
-            socketio.emit('newnumber', {'number': currTemp}, namespace='/test')
+
+	    # Send data to dictionary
+	    database['actValues']['analog']['actTemp'] = currTemp
+
+	    socketio.emit('newnumber', {'number': currTemp}, namespace='/test') # Socket thread
+
+	    updateDatabase(database) # Upload data to JSON file
             sleep(self.delay)
 
     def run(self):
@@ -73,32 +94,46 @@ class ReadAnalogValues(Thread):
 # Renders main page
 @application.route('/', methods = ['POST','GET'])
 def index():
-    number = ''
+    userTemp = ''
+
     if request.method == 'POST':
 
         if 'turnon' in request.form:
-           print 'TURN ON'
-           a.digital_write(LED_PIN,1)
+            print 'LED TURNED ON'
+	    database['actValues']['digital']['led'] = 1
+            a.digital_write(LED_PIN,1)
 
         elif 'turnoff' in request.form:
-           print 'TURN OFF'
-           a.digital_write(LED_PIN,0)
+            print 'LED TURNED OFF'
+	    database['actValues']['digital']['led'] = 0
+            a.digital_write(LED_PIN,0)
+
         elif 'setTemp' in request.form:
 	    print 'Setting temp'
 	    try:
-   		val = request.form['temperature_val']
-		number = float(val)
-   		print('User set temperature to ' + str(number))
+   		userTemp = float(request.form['temperature_val'])
+		database['actValues']['analog']['userTemp'] = userTemp
+		a.analog_write(WRITE_PIN,database['actValues']['analog']['userTemp'])
+   		print('User set temperature to ' + str(userTemp))
 	    except ValueError:
    		print('User did not wrote a number')
-        else:
+
+        elif 'ledcheck' in request.form:
+	    print 'LED check'
+	    if database['actValues']['digital']['led'] == 1:
+		database['actValues']['digital']['led'] = 0
+	        a.digital_write(LED_PIN,0)
+	    else:
+		database['actValues']['digital']['led'] = 1
+		a.digital_write(LED_PIN,1)
+	else:
 	    pass
 
-    # Read ANALOG value from PIN
-    #analogData = 0 #a.analog_read(ANALOG_PIN)
+    # Sends info into database
+    updateDatabase(database)
 
     # Renders the final template with given variables
-    return render_template('index.html', temp=number, testVar='Loading...')
+    return render_template('index.html', setTemp=database['actValues']['analog']['userTemp'] if 'userTemp' in database['actValues']['analog'] else userTemp, tempFromArd='Loading...')
 
 @socketio.on('connect', namespace='/test')
 def test_connect():
@@ -129,11 +164,30 @@ def turn_off():
     a.digital_write(LED_PIN,0)
     return redirect( url_for('index') )
 
+def displayErrorHTML(error):
+    # Formats an error in HTML for debugging on web page
+    err = "<p>PYTHON ERROR</p>"
+    err += "<pre>" + error + "</pre>"
+    return err
+
+@application.errorhandler(500)
+def internalServerError(error):
+    err = "<p>ERROR! 500</p>"
+    err += "<pre>"+ str(error) + "</pre>"
+    err += "<pre>"+ str(traceback.format_exc()) + "</pre>"
+    return err
+
+# Data available in JSON format
+@application.route('/api', methods=['GET'])
+def json():
+    with open('/var/www/server/database.json') as json_file:
+        data = json_file.read()
+	response = make_response(data)
+        response.headers['Content-Type'] = 'application/json'
+        return response
 
 # Run the app
 if __name__ == "__main__":
     socketio.run(application)
-    application.run('0.0.0.0')
     application.debug = True
-
-
+    application.run('0.0.0.0')
