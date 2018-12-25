@@ -57,10 +57,10 @@ void digital_read(int pin_number){
 void analog_read(int pin_number){
     /*
      * Performs an analog read on pin_number and returns the value read to serial
-     * in this format: A{pin_number}:{value}\n where value ranges from 0 to 1023
+     * in this format: A{pin_number}:{value}\n where value ranges from -1023 to 1023
      */
 
-    analog_value = random(0,255);
+    analog_value = random(-255,255);
     //analog_value = analogRead(pin_number);
     Serial.print('A');
     Serial.print(pin_number);
