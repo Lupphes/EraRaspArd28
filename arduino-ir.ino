@@ -9,6 +9,9 @@
  * - WA6:125 -> Writes 125 to analog output pin 6 (PWM)
  */
 
+
+
+
 char operation; // Holds operation (R, W, ...)
 char mode; // Holds the mode (D, A)
 int pin_number; // Holds the pin number
@@ -87,7 +90,7 @@ void analog_write(int pin_number, int analog_value){
 void setup() {
     Serial.begin(9600); // Serial Port at 9600 baud
     Serial.setTimeout(100); // Instead of the default 1000ms, in order
-                            // to speed up the Serial.parseInt() 
+                            // to speed up the Serial.parseInt()
     randomSeed(444);
 }
 
