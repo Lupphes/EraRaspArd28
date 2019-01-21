@@ -8,8 +8,14 @@
  * - WD13:1 -> Writes 1 (HIGH) to digital output pin 13
  * - WA6:125 -> Writes 125 to analog output pin 6 (PWM)
  */
-
-
+#include <SPI.h> //Library for ethernet connection
+#include <Phpoc.h> //Phpoc Library
+#include <IP6Address.h>
+#include <Phpoc.h>
+#include <PhpocClient.h>
+#include <PhpocDateTime.h>
+#include <PhpocEmail.h>
+#include <PhpocServer.h>
 
 
 char operation; // Holds operation (R, W, ...)
@@ -19,7 +25,8 @@ int digital_value; // Holds the digital value
 int analog_value; // Holds the analog value
 int value_to_write; // Holds the value that we want to write
 int wait_for_transmission = 5; // Delay in ms in order to receive the serial data
-
+enum day { FAILURE, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY }; // Cases for week
+enum day today; // Today
 
 
 void set_pin_mode(int pin_number, char mode){
@@ -87,23 +94,36 @@ void analog_write(int pin_number, int analog_value){
   analogWrite(pin_number, analog_value);
 }
 
-void heating(){
+
+
+void heating(){ // Program that controls heating
 
 }
 
-void watering(){
+void watering(){ // Program that watering system
     
 }
 
-void lights(){
+void lights(){ // Program that controls lights inside of the house based on the outside light
     
 }
+
+PhpocDateTime datetime; // Date time function from PHPoC library
 
 void setup() {
     Serial.begin(9600); // Serial Port at 9600 baud
     Serial.setTimeout(100); // Instead of the default 1000ms, in order
                             // to speed up the Serial.parseInt()
     randomSeed(444);
+    while (!Serial)
+    ;
+
+    Phpoc.begin();
+
+    Serial.println("Weekly Scheduling");
+
+    datetime.date("Y-m-d D H:i:s");
+    Serial.println(datetime.date());
 }
 
 void loop() {
@@ -145,4 +165,14 @@ void loop() {
                 break;
         }
     }
+
+    today =  datetime.dayofWeek();
+
+    if (today == FAILURE)
+        Serial.println("System Error!");
+    else if ( today >= MONDAY && today <= FRIDAY)
+        watering();
+    else
+        heating();
+
 }
