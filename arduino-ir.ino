@@ -1,3 +1,5 @@
+
+
 /*
  * Sketch to control the pins of Arduino via serial interface
  *
@@ -9,6 +11,15 @@
  * - WA6:125 -> Writes 125 to analog output pin 6 (PWM)
  */
 
+#include <EepromAT24C32.h>
+#include <RtcDateTime.h>
+#include <RtcDS1302.h>
+#include <RtcDS1307.h>
+#include <RtcDS3231.h>
+#include <RtcDS3234.h>
+#include <RtcTemperature.h>
+#include <RtcUtility.h>
+#include <ThreeWire.h>
 
 char operation; // Holds operation (R, W, ...)
 char mode; // Holds the mode (D, A)
@@ -105,8 +116,10 @@ void setup() {
     Serial.setTimeout(100); // Instead of the default 1000ms, in order
                             // to speed up the Serial.parseInt()
     randomSeed(444);
-    while (!Serial)
-    ;
+    
+    Serial.begin(115200);
+    rtc.begin();
+
 }
 
 void loop() {
