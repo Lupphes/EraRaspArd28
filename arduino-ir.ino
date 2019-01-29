@@ -8,14 +8,6 @@
  * - WD13:1 -> Writes 1 (HIGH) to digital output pin 13
  * - WA6:125 -> Writes 125 to analog output pin 6 (PWM)
  */
-#include <SPI.h> //Library for ethernet connection
-#include <Phpoc.h> //Phpoc Library
-#include <IP6Address.h>
-#include <Phpoc.h>
-#include <PhpocClient.h>
-#include <PhpocDateTime.h>
-#include <PhpocEmail.h>
-#include <PhpocServer.h>
 
 
 char operation; // Holds operation (R, W, ...)
@@ -117,13 +109,6 @@ void setup() {
     randomSeed(444);
     while (!Serial)
     ;
-
-    Phpoc.begin();
-
-    Serial.println("Weekly Scheduling");
-
-    datetime.date("Y-m-d D H:i:s");
-    Serial.println(datetime.date());
 }
 
 void loop() {
@@ -165,14 +150,5 @@ void loop() {
                 break;
         }
     }
-
-    today =  datetime.dayofWeek();
-
-    if (today == FAILURE)
-        Serial.println("System Error!");
-    else if ( today >= MONDAY && today <= FRIDAY)
-        watering();
-    else
-        heating();
 
 }
