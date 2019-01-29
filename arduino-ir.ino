@@ -17,8 +17,6 @@ int digital_value; // Holds the digital value
 int analog_value; // Holds the analog value
 int value_to_write; // Holds the value that we want to write
 int wait_for_transmission = 5; // Delay in ms in order to receive the serial data
-enum day { FAILURE, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY }; // Cases for week
-enum day today; // Today
 
 
 void set_pin_mode(int pin_number, char mode){
