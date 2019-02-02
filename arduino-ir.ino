@@ -10,7 +10,7 @@
  * - WD13:1 -> Writes 1 (HIGH) to digital output pin 13
  * - WA6:125 -> Writes 125 to analog output pin 6 (PWM)
  */
-
+/*
 #include <EepromAT24C32.h>
 #include <RtcDateTime.h>
 #include <RtcDS1302.h>
@@ -20,6 +20,8 @@
 #include <RtcTemperature.h>
 #include <RtcUtility.h>
 #include <ThreeWire.h>
+*/
+
 
 char operation; // Holds operation (R, W, ...)
 char mode; // Holds the mode (D, A)
@@ -98,25 +100,48 @@ void analog_write(int pin_number, int analog_value){
 
 
 void heating(){ // Program that controls heating
-
+    if (roomtemp < requestedtemp) {
+        //heating on
+    } else
+    {
+        //heating off
+    }
+    
+    
 }
 
 void watering(){ // Program that watering system
+    if (humidity < sethumidity) {
+        //watering on
+    } else
+    {
+        //watering off
+    }
+    
     
 }
 
 void lights(){ // Program that controls lights inside of the house based on the outside light
-    
+    if (outside_light == dark) {
+            digitalWrite(16, HIGH); //lights on
+    } else
+    {
+            digitalWrite(16, LOW); //light off
+    }
 }
 
-PhpocDateTime datetime; // Date time function from PHPoC library
+void automatization(){
+    heating();
+    watering();
+    lights();
+}
 
 void setup() {
     Serial.begin(9600); // Serial Port at 9600 baud
     Serial.setTimeout(100); // Instead of the default 1000ms, in order
                             // to speed up the Serial.parseInt()
     randomSeed(444);
-    
+    pinMode(16, OUTPUT)
     Serial.begin(115200);
     rtc.begin();
 
@@ -161,5 +186,9 @@ void loop() {
                 break;
         }
     }
-
+    else
+    {
+            automatization();
+    }
+    
 }
