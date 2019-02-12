@@ -10,17 +10,7 @@
  * - WD13:1 -> Writes 1 (HIGH) to digital output pin 13
  * - WA6:125 -> Writes 125 to analog output pin 6 (PWM)
  */
-/*
-#include <EepromAT24C32.h>
-#include <RtcDateTime.h>
-#include <RtcDS1302.h>
-#include <RtcDS1307.h>
-#include <RtcDS3231.h>
-#include <RtcDS3234.h>
-#include <RtcTemperature.h>
-#include <RtcUtility.h>
-#include <ThreeWire.h>
-*/
+
 
 
 char operation; // Holds operation (R, W, ...)
@@ -100,33 +90,38 @@ void analog_write(int pin_number, int analog_value){
 
 
 void heating(){ // Program that controls heating
+    float data = analogRead(A7); // Reading raw values from sensor
+    float roomtemp = (5.0 * data * 100.0) / 1024.0; // Converting raw value to Celsius
     if (roomtemp < requestedtemp) {
-        //heating on
+        // Heat on
     } else
     {
-        //heating off
+        // Heat off
     }
     
     
 }
 
 void watering(){ // Program that watering system
+    int humidity = analog_read(A8) // Reading raw values from sensor
     if (humidity < sethumidity) {
-        //watering on
+        // Watering on
     } else
     {
-        //watering off
+        // Watering off
     }
     
     
 }
 
 void lights(){ // Program that controls lights inside of the house based on the outside light
-    if (outside_light == dark) {
-            digitalWrite(16, HIGH); //lights on
+    rawvallight = analogRead(A9); // Reading raw values from sensor
+    outside_light = map(rawvallight, 0, 1023, 0, 100); // Converting raw values to percentage
+    if (outside_light <= 30) {
+            digitalWrite(13, HIGH); // Lights on
     } else
     {
-            digitalWrite(16, LOW); //light off
+            digitalWrite(13, LOW); // Lights off
     }
 }
 
@@ -142,9 +137,6 @@ void setup() {
                             // to speed up the Serial.parseInt()
     randomSeed(444);
     pinMode(16, OUTPUT)
-    Serial.begin(115200);
-    rtc.begin();
-
 }
 
 void loop() {
