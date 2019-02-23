@@ -11,7 +11,10 @@
  * - WA6:125 -> Writes 125 to analog output pin 6 (PWM)
  */
 
-
+#define heating_pin A7
+#define watering_pin A8
+#define lights_pin A9
+#define relay_pin A10
 
 char operation; // Holds operation (R, W, ...)
 char mode; // Holds the mode (D, A)
@@ -90,32 +93,32 @@ void analog_write(int pin_number, int analog_value){
 
 
 void heating(){ // Program that controls heating
-    float data = analogRead(A7); // Reading raw values from sensor
+    float data = analogRead(heating_pin); // Reading raw values from sensor
     float roomtemp = (5.0 * data * 100.0) / 1024.0; // Converting raw value to Celsius
     if (roomtemp < requestedtemp) {
-        // Heat on
+        digital_write(relay_pin, HIGH)// Heat on
     } else
     {
-        // Heat off
+        digital_write(relay_pin, LOW)// Heat off
     }
     
     
 }
 
 void watering(){ // Program that watering system
-    int humidity = analog_read(A8) // Reading raw values from sensor
+    int humidity = analog_read(watering_pin) // Reading raw values from sensor
     if (humidity < sethumidity) {
-        // Watering on
+        digital_write(relay_pin, HIGH)// Watering on
     } else
     {
-        // Watering off
+        digital_write(relay_pin, LOW)// Watering off
     }
     
     
 }
 
 void lights(){ // Program that controls lights inside of the house based on the outside light
-    rawvallight = analogRead(A9); // Reading raw values from sensor
+    rawvallight = analogRead(lights_pin); // Reading raw values from sensor
     outside_light = map(rawvallight, 0, 1023, 0, 100); // Converting raw values to percentage
     if (outside_light <= 30) {
             digitalWrite(13, HIGH); // Lights on
