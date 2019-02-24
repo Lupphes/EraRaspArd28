@@ -120,7 +120,7 @@ void watering(){ // Program that watering system
 void lights(){ // Program that controls lights inside of the house based on the outside light
     rawvallight = analogRead(lights_pin); // Reading raw values from sensor
     outside_light = map(rawvallight, 0, 1023, 0, 100); // Converting raw values to percentage
-    if (outside_light <= 30) {
+    if (outside_light <= 30) { // If the percentage of light falls below 30 percent the lights will turn on
             digitalWrite(13, HIGH); // Lights on
     } else
     {
