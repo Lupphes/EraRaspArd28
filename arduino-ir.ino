@@ -66,8 +66,7 @@ void analog_read(int pin_number){
      * in this format: A{pin_number}:{value}\n where value ranges from -1023 to 1023
      */
 
-    analog_value = random(-255,255);
-    //analog_value = analogRead(pin_number);
+    analog_value = analogRead(pin_number);
     Serial.print('A');
     Serial.print(pin_number);
     Serial.print(':');
@@ -84,8 +83,8 @@ void digital_write(int pin_number, int digital_value){
 
 void analog_write(int pin_number, int analog_value){
     /*
-   * Performs an analog write on pin_number with the analog_value
-   * The value must be range from 0 to 255
+     * Performs an analog write on pin_number with the analog_value
+     * The value must be range from 0 to 255
      */
   analogWrite(pin_number, analog_value);
 }
@@ -180,10 +179,5 @@ void loop() {
             default: // Unexpected char
                 break;
         }
-    }
-    else
-    {
-            automatization();
-    }
-    
+    }   
 }
