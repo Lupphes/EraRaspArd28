@@ -1,7 +1,7 @@
 # Raspberry Pi & Arduino - Serial connection
 **Erasmus+ SmartHouse Project**
 
-This repository was created for Eramsmus+ project. It will let you create Raspberry Pi FLask web server from which through USB (serial) you can control/recieve and send data to the Arduino and display them on the web page in real-time. This is main functional part of the project and there are several possiblities how to expand it.
+This repository was created for Eramsmus+ project. It will let you create Raspberry Pi Flask web server from which through USB (serial) you can control/recieve and send data to the Arduino and display them on the web page in real-time. This is main functional part of the project and there are several possibilities how to expand it.
 
 # Annotation
 This code was created by Czech group as part for Erasmus+ project. The goal of the project was constructing a functional model of Smart house, which can be built in every country in Europe. Therefore, we had to have in mind every weather condition which can appear. We collaborated with 5 other countries -  Poland, France, Spain and Germany. Each country which participated had assigned work in the project. I have chosen this project because it is one of the most interesting projects which I have participated on in our school and as a Erasmus+ project it will have an impact on an actual situation and answer real problems. 
@@ -40,11 +40,96 @@ In conclusion I sincerely believe that my part of the project is well accomplish
 #### SSH
 1. Enable SSH with command `sudo systemctl enable ssh` and `sudo systemctl start ssh`.
 You should be able to connect through console from your computer connected to the same network. You can connect on iOS through console with `SSH` command and on Windows through PuTTy. You can find your IP in your router settings.
+
 #### Samba
 1. Install necessary packages with command `sudo apt-get install samba samba-common-bin`. Type `Y` If needed.
 2. Configure samba by opening `sudo nano /etc/samba/smb.conf` and set up properties. (optional).
 3. Add samba user and setup password for it - `sudo smbpasswd -a pi`. (pi is the password)
 4. Restart the Samba utility - `sudo service smbd restart`.
+
+### Access point 
+
+### Core files 
+1. Clone this repository `git clone https://github.com/TheLupp/EraRaspArd28.git`.
+2. Create web server folder `sudo mkdir /var/www/server`.
+3. Copy files from cloned repository into server folder - `sudo cp -a EraRaspArd28-master/. /var/www/server/`.
+4. Delete previous Apache config - `sudo a2dissite 000-default`.
+4. Configure Apache with new config bellow over here `sudo nano /etc/apache2/sites-available/`.
+
+       <VirtualHost *>
+         WSGIDaemonProcess server user=pi group=www-data threads=5
+         WSGIScriptAlias / /var/www/server/server.wsgi
+
+         <Directory /var/www/server>
+           WSGIProcessGroup server
+           WSGIApplicationGroup %{GLOBAL}
+           Order allow,deny
+           Allow from all
+           #Require all granted
+         </Directory>
+       </VirtualHost>
+5. Enable mod_wsgi module - `sudo a2enmod wsgi`.
+6. Reload Apache - `sudo systemctl restart apache2`.
+
+### Access point 
+1. Install necessary packages with command `sudo apt-get -y install hostapd dnsmasq`. Type `Y` If needed.
+2. Edit the dhcpcd file - `sudo nano /etc/dhcpcd.conf` and add `denyinterfaces wlan0` at the bottom and save.
+3. Edit interfaces file - `sudo nano /etc/network/interfaces` and add at bottom this:
+
+        auto lo
+        iface lo inet loopback
+
+        auto eth0
+        iface eth0 inet dhcp
+
+        allow-hotplug wlan0
+        iface wlan0 inet static
+            address 192.168.28.1
+            netmask 255.255.255.0
+            network 192.168.28.0
+            broadcast 192.168.28.255          
+4. Configure hostpd `sudo nano /etc/hostapd/hostapd.conf`.
+
+        interface=wlan0
+        driver=nl80211
+        ssid=SmartHouse28
+        hw_mode=g
+        channel=6
+        ieee80211n=1
+        wmm_enabled=1
+        ht_capab=[HT40][SHORT-GI-20][DSSS_CCK-40]
+        macaddr_acl=0
+        auth_algs=1
+        ignore_broadcast_ssid=0
+        wpa=2
+        wpa_key_mgmt=WPA-PSK
+        wpa_passphrase=erasmus28
+        rsn_pairwise=CCMP
+5. Configure path to hostpd `sudo nano /etc/default/hostapd`. Find the line `#DAEMON_CONF=""` and replace it with: `DAEMON_CONF="/etc/hostapd/hostapd.conf"`.
+6. Configure Dnsmasq for automatically assigning IP addresses
+
+     Backup current dnsmasq - `sudo mv /etc/dnsmasq.conf /etc/dnsmasq.conf.bak` 
+     Edit `sudo nano /etc/dnsmasq.conf` and add into blank file this:
+     
+        interface=wlan0 
+        listen-address=192.168.28.1
+        bind-interfaces 
+        server=8.8.8.8
+        domain-needed
+        bogus-priv
+        dhcp-range=192.168.28.100,192.168.28.200,24h
+        
+7. Reboot the Raspberry PI - `sudo reboot`.
+
+### NAT
+1.  Edit the sysctl file - `sudo nano /etc/sysctl.conf` and look for the line `#net.ipv4.ip_forward=1`, and uncomment it by deleting the `#`.
+2. Bunch of commands - blah blah blah
+
+        sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE  
+        sudo iptables -A FORWARD -i eth0 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+        sudo iptables -A FORWARD -i wlan0 -o eth0 -j ACCEPT
+        sudo sh -c "iptables-save > /etc/iptables.ipv4.nat"
+3.  Edit the rc.local file - `sudo nano /etc/rc.local` Just above the `exit 0` line (which ends the script), add the following: `iptables-restore < /etc/iptables.ipv4.nat` and `sudo reboot`.
 
 # URLs
 Raspberry Pi Official Image - https://www.raspberrypi.org/downloads/raspbian/
