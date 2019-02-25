@@ -131,6 +131,17 @@ You should be able to connect through console from your computer connected to th
         sudo sh -c "iptables-save > /etc/iptables.ipv4.nat"
 3.  Edit the rc.local file - `sudo nano /etc/rc.local` Just above the `exit 0` line (which ends the script), add the following: `iptables-restore < /etc/iptables.ipv4.nat` and `sudo reboot`.
 
+## Arduino 
+1. Download [Arduino IDE](https://www.arduino.cc/en/Main/Software) and install it on your computer.
+2. Upload `arduino-ir.ino` to your board.
+3. Connect Arduino to Raspberry through Serial/USB cable.
+
+# YOU ARE READY!
+
+# ERRORS
+1. Internal Server Error 
+* In order to successfully start Flask server on Raspberry Pi you need to connect with USB/Serial Arduino. 
+
 # URLs
-Raspberry Pi Official Image - https://www.raspberrypi.org/downloads/raspbian/
-Raspbian Stretch Lite
+Raspberry Pi Official Image of Raspbian Stretch Lite- https://www.raspberrypi.org/downloads/raspbian/
+Official Arduino software - https://www.arduino.cc/en/Main/Software
