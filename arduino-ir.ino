@@ -128,9 +128,23 @@ void lights(){ // Program that controls lights inside of the house based on the 
 }
 
 void automatization(){
-    heating();
-    watering();
-    lights();
+   switch (function)
+   {
+       case 'heating':
+            heating();
+           break;
+
+        case 'watering':
+            watering();
+            break;
+
+        case 'lights':
+            lights();
+            break;
+    
+       default:
+           break;
+   }
 }
 
 void setup() {
