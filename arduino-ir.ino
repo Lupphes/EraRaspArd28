@@ -128,17 +128,17 @@ void lights(){ // Program that controls lights inside of the house based on the 
 }
 
 void automatization(){
-   switch (function)
+   switch (pin_number)
    {
-       case 'heating':
+       case '15':
             heating();
            break;
 
-        case 'watering':
+        case '14':
             watering();
             break;
 
-        case 'lights':
+        case '13':
             lights();
             break;
     
