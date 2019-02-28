@@ -140,7 +140,12 @@ You should be able to connect through console from your computer connected to th
 
 # ERRORS
 1. Internal Server Error 
-* In order to successfully start Flask server on Raspberry Pi you need to connect with USB/Serial Arduino. 
+In order to successfully start Flask server on Raspberry Pi you need to connect with USB/Serial Arduino. 
+I) 
+Delete `*.pyc` (with c!) -  `sudo rm *.pyc` & Delete database.jsou - `sudo rm database.json` and reboot.
+II) If you are not using original Arduino go to pyduino.py (`sudo nano pyduino.py)`) and change connection from /dev/ttyACM0 to /dev/ttyAMA0 and save + reboot.
+
+      
 
 # URLs
 Raspberry Pi Official Image of Raspbian Stretch Lite- https://www.raspberrypi.org/downloads/raspbian/
