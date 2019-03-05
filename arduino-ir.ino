@@ -66,7 +66,22 @@ void analog_read(int pin_number){
      * in this format: A{pin_number}:{value}\n where value ranges from -1023 to 1023
      */
 
-    analog_value = analogRead(pin_number);
+    float data = analogRead(pin_number); // Reading raw values from sensor
+
+    switch (pin_number)
+    {
+        case 0: // Executes following code if the pin_number equals zero which is room temperature
+            float analog_value = (5.0 * data * 100.0) / 1024.0; // Converting raw value to Celsius            
+            break;
+
+        case 1:
+            float analog_value = data;
+            break;
+    
+        default:
+            break;
+    }
+
     Serial.print('A');
     Serial.print(pin_number);
     Serial.print(':');
