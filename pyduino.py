@@ -15,10 +15,8 @@ def _join_command(self, pin_number, joinString, headerString):
 class Arduino():
     """ Models an Arduino connection """
 
-    def __init__(self, serial_port='/dev/ttyUSB0', baud_rate=9600, read_timeout=5):
-        """
-        Initializes the serial connection to the Arduino board
-        """
+    def __init__(self, serial_port='/dev/ttyUSB0', baud_rate=9600, read_timeout=5):  # ttyACM0 - For official Arduino
+        """ Initializes the serial connection to the Arduino board """
         self.conn = serial.Serial(serial_port, baud_rate)
         self.conn.timeout = read_timeout  # Timeout for readline()
 
