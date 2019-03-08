@@ -68,7 +68,6 @@ In conclusion I sincerely believe that my part of the project is well accomplish
 
 5.  Configure Apache with new config bellow over here `sudo nano /etc/apache2/sites-available/`.
 
-          
             WSGIDaemonProcess server user=pi group=www-data threads=5
             WSGIScriptAlias / /var/www/server/server.wsgi
 
@@ -79,8 +78,6 @@ In conclusion I sincerely believe that my part of the project is well accomplish
               Allow from all
               #Require all granted
             
-           
-
 6.  Enable mod_wsgi module - `sudo a2enmod wsgi`.
 
 7.  Reload Apache - `sudo systemctl restart apache2`.
