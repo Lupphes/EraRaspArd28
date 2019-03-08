@@ -52,8 +52,6 @@ dat = DatabaseJSON()
 database = dat.get_database_data()
 print('Database initialized')
 
-print(str(database))
-
 dataA = database['lastEntry']['analog']
 dataD = database['lastEntry']['digital']
 
@@ -133,7 +131,7 @@ def index():
                 dataD['led'] = 0
                 a.digital_write(LED_PIN, 0)
             else:
-                databD['led'] = 1
+                dataD['led'] = 1
                 a.digital_write(LED_PIN, 1)
         else:
             pass
