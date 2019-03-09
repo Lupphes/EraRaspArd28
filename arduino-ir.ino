@@ -11,10 +11,6 @@
  * - WA6:125 -> Writes 125 to analog output pin 6 (PWM)
  */
 
-#define heating_pin A7
-#define watering_pin A8
-#define lights_pin A9
-#define relay_pin A10
 
 char operation; // Holds operation (R, W, ...)
 char mode; // Holds the mode (D, A)
@@ -71,11 +67,11 @@ void analog_read(int pin_number){
     switch (pin_number)
     {
         case 0: // Executes following code if the pin_number equals zero which is room temperature
-            float analog_value = (5.0 * data * 100.0) / 1024.0; // Converting raw value to Celsius            
+            analog_value = (5.0 * data * 100.0) / 1024.0; // Converting raw value to Celsius            
             break;
 
         case 1:
-            float analog_value = data;
+            analog_value = data;
             break;
     
         default:
@@ -107,33 +103,33 @@ void analog_write(int pin_number, int analog_value){
 
 
 void heating(){ // Program that controls heating
-    float data = analogRead(heating_pin); // Reading raw values from sensor
+    float data = analogRead(pin_number); // Reading raw values from sensor
     float roomtemp = (5.0 * data * 100.0) / 1024.0; // Converting raw value to Celsius
-    if (roomtemp < requestedtemp) {
-        digital_write(relay_pin, HIGH)// Heat on
+    if (roomtemp < 22) {
+        digital_write(pin_number, HIGH);// Heat on
     } else
     {
-        digital_write(relay_pin, LOW)// Heat off
+        digital_write(pin_number, LOW);// Heat off
     }
     
     
 }
 
-void watering(){ // Program that watering system
-    int humidity = analog_read(watering_pin) // Reading raw values from sensor
-    if (humidity < sethumidity) {
-        digital_write(relay_pin, HIGH)// Watering on
+void watering(int pin_number){ // Program that watering system
+    float humidity = analog_read(pin_number); // Reading raw values from sensor
+    if (humidity < 30) {
+        digital_write(pin_number, HIGH);// Watering on
     } else
     {
-        digital_write(relay_pin, LOW)// Watering off
+        digital_write(pin_number, LOW);// Watering off
     }
     
     
 }
 
 void lights(){ // Program that controls lights inside of the house based on the outside light
-    rawvallight = analogRead(lights_pin); // Reading raw values from sensor
-    outside_light = map(rawvallight, 0, 1023, 0, 100); // Converting raw values to percentage
+    float rawvallight = analogRead(pin_number); // Reading raw values from sensor
+    float outside_light = map(rawvallight, 0, 1023, 0, 100); // Converting raw values to percentage
     if (outside_light <= 30) { // If the percentage of light falls below 30 percent the lights will turn on
             digitalWrite(13, HIGH); // Lights on
     } else
@@ -145,15 +141,15 @@ void lights(){ // Program that controls lights inside of the house based on the 
 void automatization(){
    switch (pin_number)
    {
-       case '15':
+       case 15:
             heating();
            break;
 
-        case '14':
-            watering();
+        case 14:
+            watering(14);
             break;
 
-        case '13':
+        case 13:
             lights();
             break;
     
@@ -167,7 +163,7 @@ void setup() {
     Serial.setTimeout(100); // Instead of the default 1000ms, in order
                             // to speed up the Serial.parseInt()
     randomSeed(444);
-    pinMode(16, OUTPUT)
+    pinMode(16, OUTPUT);
 }
 
 void loop() {
