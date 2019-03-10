@@ -115,8 +115,8 @@ void heating(){ // Program that controls heating
     
 }
 
-void watering(int pin_number){ // Program that watering system
-    float humidity = analog_read(pin_number); // Reading raw values from sensor
+void watering(){ // Program that watering system
+    float humidity = 9; // Reading raw values from sensor
     if (humidity < 30) {
         digital_write(pin_number, HIGH);// Watering on
     } else
@@ -146,7 +146,7 @@ void automatization(){
            break;
 
         case 14:
-            watering(14);
+            watering();
             break;
 
         case 13:
