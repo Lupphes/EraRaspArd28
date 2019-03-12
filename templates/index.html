@@ -1,40 +1,82 @@
-{% extends 'base.html' %}
-
-{% block header %}
-  <h1>{% block title %} Smart House - 4*7 {% endblock %}</h1>
-{% endblock %}
+{% extends 'template.html' %}
 
 {% block content %}
-	<h3>Inputs from house</h3>
-        <strong>User set temperature:</strong> {{ setTemp }}<br>
-        <strong>Actual temperature:</strong> <span id="test">{{ tempFromArd }}</span><br>
-
-        <h3>Interaction with interface</h3>
-	<h4>LED</h4>
-	<form id="check" role="form" method="post" action="/" >
-            <div class="form-check">
-    	        <input onchange="$('#check').submit();" type="checkbox" name="ledcheck" class="form-check-input" id="exampleCheck"/>
-    	        <label class="form-check-label" for="exampleCheck">LED</label>
-	    </div>
-	</form>    	
-
-	<form role="form" method="post" action="/" >
-  	    <p>
-		<button type="submit" name="turnon" class="btn btn-default">Turn On</button>
-		<button type="submit" name="turnoff" class="btn btn-default">Turn Off</button>
-	    </p>    
-    	</form>
-	<h4>User input for temperature</h4>
-      	<form role="form" method="post" action="/">
-            <div class="form-group">
-          	<input type="text" name="temperature_val" class="form-control" id="url-box" placeholder="Enter temperature..." style="max-width: 300px; display: inline" required>
+<div class="animated fadeIn">
+    <div class="buttons">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <strong>Lights</strong>
+                        <small>Buttons for light control</small>
+                    </div>
+                    <div class="card-body">
+                        <form role="form" method="post" action="/">
+                            <button type="submit" name="turnon" class="btn btn-success">Turn On</button>
+                            <button type="submit" name="turnoff" class="btn btn-primary">Turn Off</button>
+                        </form>
+                    </div>
+                </div><!-- /# card -->
+                <div class="card">
+                    <div class="card-header">
+                        <strong>User input for temperature</strong>
+                        <small>Input for user temperature</small>
+                    </div>
+                    <div class="card-body">
+                        <form role="form" method="post" action="/">
+                            <div class="form-group">
+                                <input type="text" name="temperature_val" class="form-control" id="url-box" placeholder="Enter temperature..." style="max-width: 300px; display: inline" required>
+                            </div>
+                            <button type="submit" name="setTemp" value="temp" class="btn btn-default">Submit</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <strong>Led </strong>
+                        <small>This controls the LEDs in smart house</small>
+                    </div>
+                    <div class="card-body">
+                        <button type="button" class="btn btn-primary">nevim</button>
+                        <button type="button" class="btn btn-success">dát</button>
+                    </div>
+                </div>
             </div>
-            <button type="submit" name="setTemp" value="temp" class="btn btn-default">Submit</button>
-      	</form>
+
+            <!-- Right Block -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <strong>Led </strong>
+                        <small>This controls the LEDs in smart house</small>
+                    </div>
+                    <div class="card-body">
+                        <button type="button" class="btn btn-primary">nevim</button>
+                        <button type="button" class="btn btn-success">dát</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <strong>Led </strong>
+                        <small>This controls the LEDs in smart house</small>
+                    </div>
+                    <div class="card-body">
+                        <button type="button" class="btn btn-primary">nevim</button>
+                        <button type="button" class="btn btn-success">dát</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <strong>Led </strong>
+                        <small>This controls the LEDs in smart house</small>
+                    </div>
+                    <div class="card-body">
+                        <button type="button" class="btn btn-primary">nevim</button>
+                        <button type="button" class="btn btn-success">dát</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
-
-
-
-
-
-       

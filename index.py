@@ -82,7 +82,7 @@ class ReadAnalogValues(Thread):
             dataA['actTemp'] = entry
             socketio.emit('newnumber', {'number': entry},
                           namespace='/test')  # Socket thread
-	    dat.update_database(database)  # Upload data to JSON file
+            dat.update_database(database)  # Upload data to JSON file
             time.sleep(self.delay)
 
     def run(self):
@@ -142,6 +142,10 @@ def index():
     # Renders the final template with given variables
     return render_template('index.html', setTemp=dataA['userTemp'] if 'userTemp' in dataA else userTemp, tempFromArd='Loading...')
 
+@application.route('/data', methods=['POST', 'GET'])
+def data():
+    return render_template('data.html')
+
 @socketio.on('connect', namespace='/test')
 def test_connect():
     # need visibility of the global thread object
@@ -152,7 +156,7 @@ def test_connect():
     if not thread.isAlive():
         print("Starting Thread")
         thread = ReadAnalogValues()
-	thread.start()
+	    thread.start()
 
 
 @socketio.on('disconnect', namespace='/test')
