@@ -52,8 +52,6 @@ dat = DatabaseJSON()
 database = dat.get_database_data()
 print('Database initialized')
 
-print(str(database))
-
 dataA = database['lastEntry']['analog']
 dataD = database['lastEntry']['digital']
 
