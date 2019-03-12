@@ -99,7 +99,7 @@ class ReadAnalogValues(Thread):
             dataA['humidity'] = humidityEntry
             dataA['lightIntensity'] = lightIntensityEntry
             
-            socketio.emit('newnumber', {'number': tempInEntry}, namespace='/test')  # Socket thread
+            socketio.emit('newdata', {'tempIn': tempInEntry, 'tempOut': tempOutEntry, 'soil': soilEntry, 'humidity': humidityEntry, 'light': lightIntensityEntry}, namespace='/values')  # Socket thread
             dat.update_database(database)  # Upload data to JSON file
             time.sleep(self.delay)
 
