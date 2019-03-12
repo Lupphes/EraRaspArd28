@@ -21,10 +21,11 @@ class DatabaseJSON():
 
     def _get_database_json(self):
         """ Reads data from file and format them into dictionary, which also returns. """
-        if self.json_path.closed:
+        try:
             with open(self.json_path, 'r') as file:
                 return json.load(file)
-        else:
+        except IOError:
+            print('File is still open.')
             time.sleep(1)
             self._get_database_json()
 
@@ -64,10 +65,11 @@ class DatabaseJSON():
             self.last_update = time.time()
 
         data['lastEntry'].update(dictionary['lastEntry'])
-        if self.json_path.closed:
+        try:
             with open(self.json_path, 'w') as data_file:
                 json.dump(data, data_file, indent=4, sort_keys=True)
-        else:
+        except IOError:
+            print('File is still open.')
             time.sleep(1)
             self._get_database_json()
 
