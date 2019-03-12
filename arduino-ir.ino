@@ -25,7 +25,7 @@ void set_pin_mode(int pin_number, char mode){
     /*
      * Performs a pinMode() operation depending on the value of the parameter
      * mode :
-     * - I: Sets the mode to INPUT
+     * - I: Sets the mode to INPUT 
      * - O: Sets the mode to OUTPUT
      * - P: Sets the mode to INPUT_PULLUP
      */
@@ -105,13 +105,20 @@ void analog_write(int pin_number, int analog_value){
 void heating(int pin_number){ // Program that controls heating
     float data = analogRead(pin_number); // Reading raw values from sensor
     float roomtemp = (5.0 * data * 100.0) / 1024.0; // Converting raw value to Celsius
+    float rawfloortmp = analog_read(pinroomtemp);
+    float floortmp = (5.0 * rawfloortmp * 100.0) / 1024.0;
     if (roomtemp < 22) {
-        digital_write(pin_number, HIGH);// Heat on
+        analog_write(pin_number, 220);// Heat on
     } else
     {
-        digital_write(pin_number, LOW);// Heat off
+        analog_write(pin_number, 0  );// Heat off
+    }
+    if (floortmp > 45) {
+        analog_write(pin_number, 0  );// Heat off
     }
     
+    
+
     
 }
 
