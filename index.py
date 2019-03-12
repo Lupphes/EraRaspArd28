@@ -38,12 +38,20 @@ time.sleep(3)
 
 # Pins declaration
 LED_PIN = 13
-TEMP_PIN = 0
+TEMP_INSIDE_PIN = 0
+TEMP_OUTSIDE_PIN = 0
+SOIL_PIN = 0
+HUMIDITY_PIN = 0
+LIGHT_INTENSITY_PIN = 0
 WRITE_PIN = 2
 
 # Setting up the pins
 a.set_pin_mode(LED_PIN, 'O')
-a.set_pin_mode(TEMP_PIN, 'I')
+a.set_pin_mode(TEMP_INSIDE_PIN, 'I')
+a.set_pin_mode(TEMP_OUTSIDE_PIN, 'I')
+a.set_pin_mode(SOIL_PIN, 'I')
+a.set_pin_mode(HUMIDITY_PIN, 'I')
+a.set_pin_mode(LIGHT_INTENSITY_PIN, 'I')
 a.set_pin_mode(WRITE_PIN, 'O')
 print('Arduino and pins initialized')
 
@@ -78,11 +86,20 @@ class ReadAnalogValues(Thread):
 
         while not thread_stop_event.isSet():
             # List of analog pins which their information needs to be stored
-            entry = a.analog_read(TEMP_PIN)
+            tempInEntry = a.analog_read(TEMP_INSIDE_PIN)
+            tempOutEntry = a.analog_read(TEMP_OUTSIDE_PIN)
+            soilEntry = a.analog_read(SOIL_PIN)
+            humidityEntry = a.analog_read(HUMIDITY_PIN)
+            lightIntensityEntry = a.analog_read(LIGHT_INTENSITY_PIN)
+
             # Send data to dictionary
-            dataA['actTemp'] = entry
-            socketio.emit('newnumber', {'number': entry},
-                          namespace='/test')  # Socket thread
+            dataA['inTemp'] = tempInEntry
+            dataA['outTemp'] = tempOutEntry
+            dataA['soil'] = soilEntry
+            dataA['humidity'] = humidityEntry
+            dataA['lightIntensity'] = lightIntensityEntry
+            
+            socketio.emit('newnumber', {'number': tempInEntry}, namespace='/test')  # Socket thread
             dat.update_database(database)  # Upload data to JSON file
             time.sleep(self.delay)
 
@@ -138,8 +155,7 @@ def index():
 @application.route('/data', methods=['POST', 'GET'])
 def data():
     userTemp = ''
-    return render_template('data.html', setTemp=dataA['userTemp'] if 'userTemp' in dataA else userTemp, tempFromArd='Loading...')
-
+    return render_template('data.html', setTemp=dataA['userTemp'] if 'userTemp' in dataA else userTemp, tempInEntry='Loading...', tempOutEntry='Loading...', soilEntry='Loading...', humidityEntry='Loading...', lightIntensityEntry='Loading...')
 
 @socketio.on('connect', namespace='/test')
 def test_connect():

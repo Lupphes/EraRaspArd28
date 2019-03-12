@@ -3,7 +3,7 @@
 {% block content %}
 <div class="animated fadeIn">
     <div class="row">
-        <div class="col-lg-3 col-md-6">
+        <div class="col-12">
             <div class="card">
                 <div class="card-body">
                     <div class="stat-widget-five">
@@ -27,8 +27,68 @@
                         </div>
                         <div class="stat-content">
                             <div class="text-left dib">
-                                <div class="stat-text" id="test">{{ tempFromArd }}</div>
-                                <div class="stat-heading">Temperature</div>
+                                <div class="stat-text" id="test">{{ tempInEntry }}</div>
+                                <div class="stat-heading">Temperature Inside</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="stat-widget-five">
+                        <div class="stat-icon dib flat-color-4">
+                            <i class="pe-7s-photo"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="text-left dib">
+                                <div class="stat-text" id="test">{{ tempOutEntry }}</div>
+                                <div class="stat-heading">Temperature Outside</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="stat-widget-five">
+                        <div class="stat-icon dib flat-color-4">
+                            <i class="pe-7s-photo"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="text-left dib">
+                                <div class="stat-text" id="test">{{ soilEntry }}</div>
+                                <div class="stat-heading">Soil</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="stat-widget-five">
+                        <div class="stat-icon dib flat-color-4">
+                            <i class="pe-7s-photo"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="text-left dib">
+                                <div class="stat-text" id="test">{{ humidityEntry }}</div>
+                                <div class="stat-heading">Humidity</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="stat-widget-five">
+                        <div class="stat-icon dib flat-color-4">
+                            <i class="pe-7s-photo"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="text-left dib">
+                                <div class="stat-text" id="test">{{ lightIntensityEntry }}</div>
+                                <div class="stat-heading">Light Intensity</div>
                             </div>
                         </div>
                     </div>
