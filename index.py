@@ -63,6 +63,7 @@ if 'led' in dataD:
 if 'userTemp' in dataA:
     a.analog_write(WRITE_PIN, dataA['userTemp'])
 
+
 class ReadAnalogValues(Thread):
     """ Class which has init function, which reads data from arduino and push them into dictionary
     It keeps executing, because of socket which communicate with .js file in webpage. """
@@ -106,7 +107,6 @@ def internalServerError(error):
 # Renders main page
 @application.route('/', methods=['POST', 'GET'])
 def index():
-    userTemp = ''
     if request.method == 'POST':
         if 'turnon' in request.form:
             print('LED TURNED ON')
@@ -134,9 +134,12 @@ def index():
     # Renders the final template with given variables
     return render_template('index.html')
 
+
 @application.route('/data', methods=['POST', 'GET'])
 def data():
+    userTemp = ''
     return render_template('data.html', setTemp=dataA['userTemp'] if 'userTemp' in dataA else userTemp, tempFromArd='Loading...')
+
 
 @socketio.on('connect', namespace='/test')
 def test_connect():
@@ -175,7 +178,7 @@ def turn_off():
 # Data available in JSON format
 @application.route('/api', methods=['GET'])
 def api():
-    with open('/var/www/server/database.json') as json_file:
+    with open(os.path.join(DIR_PATH, 'database.json')) as json_file:
         data = json_file.read()
         response = make_response(data)
         response.headers['Content-Type'] = 'application/json'

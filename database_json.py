@@ -21,8 +21,12 @@ class DatabaseJSON():
 
     def _get_database_json(self):
         """ Reads data from file and format them into dictionary, which also returns. """
-        with open(self.json_path, 'r') as file:
-            return json.load(file)
+        if self.json_path.closed:
+            with open(self.json_path, 'r') as file:
+                return json.load(file)
+        else:
+            time.sleep(1)
+            self._get_database_json()
 
     def _initialize_database(self):
         """ Creates the core of database structure.
@@ -41,7 +45,7 @@ class DatabaseJSON():
                 },
                 'entries': {}
             }, file, indent=4, sort_keys=True)
-	return self._get_database_json()
+        return self._get_database_json()
 
     def update_database(self, dictionary):
         """ Loads the data from database JSON file.
@@ -60,9 +64,12 @@ class DatabaseJSON():
             self.last_update = time.time()
 
         data['lastEntry'].update(dictionary['lastEntry'])
-
-        with open(self.json_path, 'w') as data_file:
-            json.dump(data, data_file, indent=4, sort_keys=True)
+        if self.json_path.closed:
+            with open(self.json_path, 'w') as data_file:
+                json.dump(data, data_file, indent=4, sort_keys=True)
+        else:
+            time.sleep(1)
+            self._get_database_json()
 
     def get_database_data(self):
         """ Execute initialiseDatabase function If the database file does not exists.
