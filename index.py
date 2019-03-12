@@ -180,7 +180,7 @@ def turn_off():
 
 # Data available in JSON format
 @application.route('/api', methods=['GET'])
-def json():
+def api():
     with open('/var/www/server/database.json') as json_file:
         data = json_file.read()
         response = make_response(data)
