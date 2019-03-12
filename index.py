@@ -156,7 +156,7 @@ def test_connect():
     if not thread.isAlive():
         print("Starting Thread")
         thread = ReadAnalogValues()
-	    thread.start()
+        thread.start()
 
 
 @socketio.on('disconnect', namespace='/test')
