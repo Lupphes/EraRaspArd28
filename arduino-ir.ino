@@ -73,7 +73,11 @@ void analog_read(int pin_number){
         case 1:
             analog_value = data;
             break;
-    
+        
+        case 2:
+            analog_value = data;
+            break;
+
         default:
             break;
     }
@@ -105,7 +109,7 @@ void analog_write(int pin_number, int analog_value){
 void heating(int pin_number){ // Program that controls heating
     float data = analogRead(pin_number); // Reading raw values from sensor
     float roomtemp = (5.0 * data * 100.0) / 1024.0; // Converting raw value to Celsius
-    float rawfloortmp = analog_read(pinroomtemp);
+    float rawfloortmp = analog_read(2);
     float floortmp = (5.0 * rawfloortmp * 100.0) / 1024.0;
     if (roomtemp < 22) {
         analog_write(pin_number, 220);// Heat on
@@ -116,10 +120,6 @@ void heating(int pin_number){ // Program that controls heating
     if (floortmp > 45) {
         analog_write(pin_number, 0  );// Heat off
     }
-    
-    
-
-    
 }
 
 void watering(int pin_number){ // Program that watering system
