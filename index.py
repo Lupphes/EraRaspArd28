@@ -155,7 +155,7 @@ def index():
 @application.route('/data', methods=['POST', 'GET'])
 def data():
     userTemp = ''
-    return render_template('data.html', setTemp=dataA['userTemp'] if 'userTemp' in dataA else userTemp, tempInEntry='Loading...', tempOutEntry='Loading...', soilEntry='Loading...', humidityEntry='Loading...', lightIntensityEntry='Loading...')
+    return render_template('data.html', setTemp=dataA['userTemp'] if 'userTemp' in dataA else userTemp, tempInEntryWeb='Loading', tempOutEntryWeb='Loading', soilEntryWeb='Loading', humidityEntryWeb='Loading', lightIntensityEntryWeb='Loading')
 
 @socketio.on('connect', namespace='/test')
 def test_connect():
