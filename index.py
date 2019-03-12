@@ -125,14 +125,6 @@ def index():
                 print('User set temperature to ' + str(userTemp))
             except ValueError:
                 print('User did not write a number')
-        elif 'ledcheck' in request.form:
-            print('LED check')
-            if dataD['led'] == 1:
-                dataD['led'] = 0
-                a.digital_write(LED_PIN, 0)
-            else:
-                dataD['led'] = 1
-                a.digital_write(LED_PIN, 1)
         else:
             pass
 
@@ -140,11 +132,11 @@ def index():
     dat.update_database(database)
 
     # Renders the final template with given variables
-    return render_template('index.html', setTemp=dataA['userTemp'] if 'userTemp' in dataA else userTemp, tempFromArd='Loading...')
+    return render_template('index.html')
 
 @application.route('/data', methods=['POST', 'GET'])
 def data():
-    return render_template('data.html')
+    return render_template('data.html', setTemp=dataA['userTemp'] if 'userTemp' in dataA else userTemp, tempFromArd='Loading...')
 
 @socketio.on('connect', namespace='/test')
 def test_connect():
@@ -167,6 +159,7 @@ def test_disconnect():
 @application.route('/turnon', methods=['GET'])
 def turn_on():
     # turn on LED on arduino
+    dataD['led'] = 1
     a.digital_write(LED_PIN, 1)
     return redirect(url_for('index'))
 
@@ -174,6 +167,7 @@ def turn_on():
 @application.route('/turnoff', methods=['GET'])
 def turn_off():
     # turn off LED on arduino
+    dataD['led'] = 0
     a.digital_write(LED_PIN, 0)
     return redirect(url_for('index'))
 
