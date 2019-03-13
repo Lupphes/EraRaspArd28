@@ -11,8 +11,21 @@ float floortemp; // Variable to store floor temperature in degree Celsius
 float roomtemp; // Variable to store room temperature in degree Celsius 
 int reqtemp = 30; // Requested temperature
 
+// Communication variables
+char operation; // Holds operation (R, W, ...)
+char mode; // Holds the mode (D, A)
+int pin_number; // Holds the pin number
+int digital_value; // Holds the digital value
+int analog_value; // Holds the analog value
+int value_to_write; // Holds the value that we want to write
+int wait_for_transmission = 5; // Delay in ms in order to receive the serial data
+
 void setup() {
   Serial.begin(9600); // Initiating communicationg over serial, speed 9600 baud
+  Serial.setTimeout(100); // Instead of the default 1000ms, in order
+                            // to speed up the Serial.parseInt()
+  randomSeed(444);
+  pinMode(16, OUTPUT);
   pinMode(floortemps, INPUT); // Floor temperature sensor set as input
   pinMode(heatingPWMM, OUTPUT); // Heating system pin set as output
 }
