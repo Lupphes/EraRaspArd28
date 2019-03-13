@@ -1,50 +1,47 @@
 #include <Arduino.h>
 
-//Defining pin assesment
-#define heatingPWMM 11 //Heating system pin
+// Defining pin assesment
+#define heatingPWMM 11 // Heating system pin
 
-int floortemps = 2;//Floor temp sensor
-int roomtemps = 3;//Room temp sensor
+int floortemps = 2;// Floor temp sensor
+int roomtemps = 3;// Room temp sensor
 
-//Declaring other variables
-int floorval; //temporary variable to hold floor temperature value
-int roomval; //temporary variable to hold room temperature value
-float vout; //temporary variable to hold sensor reading 
-float tempc; //variable to store temperature in degree Celsius 
-int reqtemp = 30; //requested temperature
+// Declaring other variables
+float floortemp; // Variable to store floor temperature in degree Celsius 
+float roomtemp; // Variable to store room temperature in degree Celsius 
+int reqtemp = 30; // Requested temperature
 
 void setup() {
-  //Humidity sensor setup
-  Serial.begin(9600); //Initiating communicationg over serial, speed 9600 baud
-  pinMode(floortemps, INPUT); //Floor temperature sensor set as input
-  pinMode(heatingPWMM, OUTPUT); //Heating system pin set as output
+  Serial.begin(9600); // Initiating communicationg over serial, speed 9600 baud
+  pinMode(floortemps, INPUT); // Floor temperature sensor set as input
+  pinMode(heatingPWMM, OUTPUT); // Heating system pin set as output
 }
 
 void loop() {
-  //All of the functions are declared below
+  // All of the functions are declared below
   heating();
   delay(500);
 }
 
 void heating() { 
-  roomval = analogRead(floortemps);
-  float mv = ( roomval/1024.0)*5000;
-  float cel = mv/10;
+  // Room temperature check  
+  float roomtemp = (analogRead(roomtemps)/1024.0)*500; // Reading and converting sensor value to Celsius
   Serial.print("\nrequested: ");
   Serial.print(reqtemp);
   Serial.print("\nactual: ");
-  Serial.print(cel);
-  if (reqtemp > cel) {
-    analogWrite(heatingPWMM, 220);
+  Serial.print(roomtemp);
+  if (reqtemp > roomtemp) { 
+    analogWrite(heatingPWMM, 120); // If the requested temperature is not achieved the heating turns on
   } else
   {
-    analogWrite(heatingPWMM, 0);
+    analogWrite(heatingPWMM, 0); // If the requested temperature is higher the heating turns off
   }
-  vout=analogRead(roomtemps); //Reading the value from sensor
-  vout=(vout*500)/1023;  
+
+  // Floor heating temperature check
+  floortemp = (analogRead(floortemps)*500)/1023; // Reading and converting sensor value to Celsius
   Serial.print("\nfloor ");
-  Serial.print(vout); 
-  if (vout > 45) {
-    analogWrite(10, 0);
+  Serial.print(floortemp); 
+  if (floortemp > 45) { // If floor heating temperature exceeds defined temperature heating turns off
+    analogWrite(heatingPWMM, 0);
   }
 }
